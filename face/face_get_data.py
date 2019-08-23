@@ -32,11 +32,9 @@ while True:
         )
         print("save done")
         cv2.imshow("image", img)
-
+    cv2.imshow("image", img)
     k = cv2.waitKey(100) & 0xFF  # Press 'ESC' for exiting video
     if k == 27:
-        break
-    #elif count >= 30:  # Take 30 face sample and stop video
         break
 
 cam.release()
