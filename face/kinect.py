@@ -5,6 +5,7 @@ from primesense import openni2
 from primesense import _openni2 as c_api
 import numpy as np
 from face_detect import face_detect
+from face_mtcnn import mymtcnn
 
 # declare constant
 DATASET_PATH = os.path.join(os.getcwd(), "face/dataset")
@@ -52,21 +53,21 @@ def main():
     count = 0
     while True:
         img = get_rgb(rgb_stream)
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        faces = face_detect(img)
-        for (x, y, w, h) in faces:
-            cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 1)
-            count += 1
-            # Save the captured image into the datasets folder
-            print("face detected ..., waitting for save")
-            cv2.imwrite(
-                os.path.join(
-                    DATASET_PATH, "face." + str("t5l") + "." + str(count) + ".jpg"
-                ),
-                img[y + 1 : y + h - 1, x + 1 : x + w - 1],
-            )
-            cv2.imshow("image", img)
-            print("save done")
+        faces = mymtcnn(img)
+        if faces is not None:
+            for (x, y, w, h) in faces:
+                cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 1)
+                count += 1
+                # Save the captured image into the datasets folder
+                print("face detected ..., waitting for save")
+                cv2.imwrite(
+                    os.path.join(
+                        DATASET_PATH, "face." + str("t5l") + "." + str(count) + ".jpg"
+                    ),
+                    img[y + 1 : y + h - 1, x + 1 : x + w - 1],
+                )
+                # cv2.imshow("image", img)
+                print("save done")
         cv2.imshow("image", img)
 
         # exit
