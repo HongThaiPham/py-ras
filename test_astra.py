@@ -1,3 +1,4 @@
+# cai truoc http://dl.orbbec3d.com/dist/openni2/OpenNI_2.3.0.55.zip
 import cv2
 from primesense import openni2
 from primesense import _openni2 as c_api
