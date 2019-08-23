@@ -6,7 +6,7 @@ import os
 import numpy as np
 import time
 
-dist = os.path.join("C:\OpenNI\Windows", "Redist")
+dist = os.path.join("/home/leo/OpenNI_2.3.0.55/Linux/OpenNI-Linux-Arm-2.3.0.55", "Redist")
 openni2.initialize(dist)
 dev = openni2.Device.open_any()
 rgb_stream = dev.create_color_stream()
