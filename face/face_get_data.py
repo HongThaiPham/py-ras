@@ -33,7 +33,7 @@ while True:
         print("save done")
         cv2.imshow("image", img)
     cv2.imshow("image", img)
-    k = cv2.waitKey(100) & 0xFF  # Press 'ESC' for exiting video
+    k = cv2.waitKey(1) & 0xFF  # Press 'ESC' for exiting video
     if k == 27:
         break
 
