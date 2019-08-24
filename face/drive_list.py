@@ -1,0 +1,94 @@
+from __future__ import print_function
+
+from googleapiclient import discovery
+from httplib2 import Http
+from oauth2client import file, client, tools
+from googleapiclient.http import MediaFileUpload
+import os
+from google.oauth2 import service_account
+
+CURRDIR = os.path.join(os.getcwd(), "face")
+CLIENTID = os.path.join(CURRDIR, "client_id.json")
+STOREFILE = os.path.join(CURRDIR, "storage.json")
+FILESTORE = os.path.join(CURRDIR, "dataset")
+FILE_TEST = os.path.join(FILESTORE, "face_20190824/face.1566623059835.jpg")
+UPLOAD_FOLDERID = "1GWpdI-vkIjXmdrCWkmJYH-lrQMQAFEAp"
+SERVICE_ACCOUNT_FILE = os.path.join(CURRDIR, "p1143d5a02b19.json")
+
+
+def init_drive():
+    SCOPES = "https://www.googleapis.com/auth/drive"
+
+    store = file.Storage(STOREFILE)
+    creds = store.get()
+    if not creds or creds.invalid:
+        flow = client.flow_from_clientsecrets(CLIENTID, SCOPES)
+        creds = tools.run_flow(flow, store)
+
+    drive_api = discovery.build("drive", "v3", http=creds.authorize(Http()))
+
+    return drive_api
+
+
+def get_drive_list():
+    drive_api = init_drive()
+    files = drive_api.files().list().execute().get("files", [])
+    for f in files:
+        print(f["name"], f["mimeType"])
+
+
+# get_drive_list()
+
+
+def upload_image(filepath, name, folderid=UPLOAD_FOLDERID):
+    drive_api = init_drive()
+    image_metadata = {"name": name, "parents": [folderid]}
+    media = MediaFileUpload(filepath, mimetype="image/jpeg")
+    file = (
+        drive_api.files()
+        .create(body=image_metadata, media_body=media, fields="id")
+        .execute()
+    )
+    print("Image file ID: ", file.get("id"))
+
+
+# upload_image(filepath=FILE_TEST, name="photo.jpg", folderid=FOLDERID_TEST)
+
+
+def create_foder(name, parentID=UPLOAD_FOLDERID):
+    drive_api = init_drive()
+    folder_metadata = {
+        "name": name,
+        "mimeType": "application/vnd.google-apps.folder",
+        "parents": [parentID],
+    }
+    root_folder = drive_api.files().create(body=folder_metadata).execute()
+    print(root_folder)
+
+
+def check_folder_exist(foldername):
+    drive_api = init_drive()
+    folders = (
+        drive_api.files()
+        .list(
+            q="name='"
+            + foldername
+            + "' and mimeType='application/vnd.google-apps.folder'",
+            includeItemsFromAllDrives=True,
+            driveId=UPLOAD_FOLDERID,
+            corpora="drive"
+            # spaces="drive",
+        )
+        .execute()
+        .get("files", [])
+    )
+
+    if len(folders) > 0:
+        print(folders)
+        return True
+    else:
+        return False
+
+
+print(check_folder_exist("xxx"))
+
