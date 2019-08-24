@@ -1,5 +1,6 @@
 import cv2
-import kinect
+
+# import kinect
 import picam
 from face_detect import face_detect
 import os
