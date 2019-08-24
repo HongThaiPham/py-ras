@@ -1,5 +1,4 @@
 import cv2
-import kinect
 
 RESOLUTIONX = 640
 RESOLUTIONY = 480
