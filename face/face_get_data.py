@@ -1,10 +1,11 @@
 import cv2
 import os
 import datetime
+import face_detect
 
 # declare constant
-HAAR_PATH = "/home/leo/opencv/data/haarcascades/haarcascade_frontalface_default.xml"
-DATASET_PATH = "/home/leo/leo/py-ras/face/dataset/"
+# HAAR_PATH = "/home/leo/opencv/data/haarcascades/haarcascade_frontalface_default.xml"
+# DATASET_PATH = "/home/leo/leo/py-ras/face/dataset/"
 
 print("app running ...")
 print("openning camera ...")
@@ -14,13 +15,14 @@ print("openning camera ...")
 cam = cv2.VideoCapture(0)
 cam.set(3, 640)  # set video width
 cam.set(4, 480)  # set video height
-face_detector = cv2.CascadeClassifier(HAAR_PATH)
+# face_detector = cv2.CascadeClassifier(HAAR_PATH)
 
 count = 0
 while True:
     ret, img = cam.read()
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = face_detector.detectMultiScale(gray, 1.3, 5)
+    # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # faces = face_detector.detectMultiScale(gray, 1.3, 5)
+    faces = face_detect.face_detect(img)
     for (x, y, w, h) in faces:
         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 1)
         count += 1

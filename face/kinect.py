@@ -4,8 +4,8 @@ import datetime
 from primesense import openni2
 from primesense import _openni2 as c_api
 import numpy as np
-from face_detect import face_detect
-from face_mtcnn import mymtcnn
+import face_detect
+
 
 # declare constant
 DATASET_PATH = os.path.join(os.getcwd(), "face/dataset")
@@ -16,25 +16,26 @@ RESOLUTIONY = 480
 FPS = 30
 
 
-def init_cam():
-    print("Initializing Kinect ...")
-    openni2.initialize(OPENNI_DIST)
-    dev = openni2.Device.open_any()
-    stream = dev.create_color_stream()
-    stream.set_video_mode(
-        c_api.OniVideoMode(
-            pixelFormat=c_api.OniPixelFormat.ONI_PIXEL_FORMAT_RGB888,
-            resolutionX=RESOLUTIONX,
-            resolutionY=RESOLUTIONY,
-            fps=FPS,
-        )
+# def init_cam():
+#     print("Initializing Kinect ...")
+openni2.initialize(OPENNI_DIST)
+dev = openni2.Device.open_any()
+stream = dev.create_color_stream()
+stream.set_video_mode(
+    c_api.OniVideoMode(
+        pixelFormat=c_api.OniPixelFormat.ONI_PIXEL_FORMAT_RGB888,
+        resolutionX=RESOLUTIONX,
+        resolutionY=RESOLUTIONY,
+        fps=FPS,
     )
-    # stream.start()
-    print("Cam running ...")
-    return stream
+)
+stream.start()
+# print("Cam running ...")
+# return stream
 
 
-def get_rgb(stream):
+def get_image():
+
     """
     Returns numpy 3L ndarray to represent the rgb image.
     """
@@ -45,37 +46,37 @@ def get_rgb(stream):
     return rgb
 
 
-def main():
-    print("App running ...")
-    rgb_stream = init_cam()
-    rgb_stream.start()
+# def main():
+#     print("App running ...")
+#     rgb_stream = init_cam()
+#     # rgb_stream.start()
 
-    count = 0
-    while True:
-        img = get_rgb(rgb_stream)
-        faces = mymtcnn(img)
-        if faces is not None:
-            for (x, y, w, h) in faces:
-                cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 1)
-                count += 1
-                # Save the captured image into the datasets folder
-                print("face detected ..., waitting for save")
-                cv2.imwrite(
-                    os.path.join(
-                        DATASET_PATH, "face." + str("t5l") + "." + str(count) + ".jpg"
-                    ),
-                    img[y + 1 : y + h - 1, x + 1 : x + w - 1],
-                )
-                # cv2.imshow("image", img)
-                print("save done")
-        cv2.imshow("image", img)
+#     count = 0
+#     while True:
+#         img = get_rgb(rgb_stream)
+#         faces = face_detect.face_detect(img)
+#         if faces is not None:
+#             for (x, y, w, h) in faces:
+#                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 1)
+#                 count += 1
+#                 # Save the captured image into the datasets folder
+#                 print("face detected ..., waitting for save")
+#                 cv2.imwrite(
+#                     os.path.join(
+#                         DATASET_PATH, "face." + str("t5l") + "." + str(count) + ".jpg"
+#                     ),
+#                     img[y + 1 : y + h - 1, x + 1 : x + w - 1],
+#                 )
+#                 # cv2.imshow("image", img)
+#                 print("save done")
+#         cv2.imshow("image", img)
 
-        # exit
-        k = cv2.waitKey(1) & 0xFF  # Press 'ESC' for exiting video
-        if k == 27:
-            rgb_stream.close()
-            break
-    print("app stop ...")
+#         # exit
+#         k = cv2.waitKey(1) & 0xFF  # Press 'ESC' for exiting video
+#         if k == 27:
+#             rgb_stream.close()
+#             break
+#     print("app stop ...")
 
 
 if __name__ == "__main__":
