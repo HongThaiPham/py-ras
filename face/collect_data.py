@@ -1,33 +1,58 @@
 import cv2
 
-# import kinect
+import kinect
 import picam
 from face_detect import face_detect
 import os
+from datetime import datetime
+import time
+
+
+current_milli_time = lambda: int(round(time.time() * 1000))
 
 
 DATASET_PATH = os.path.join(os.getcwd(), "face/dataset")
+BORDER_WIDTH = 1
+
+
+def get_path_file(name):
+    folder_name = "face_" + datetime.now().strftime("%Y%m%d")
+    directory = os.path.join(DATASET_PATH, folder_name)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    return os.path.join(directory, name)
+
+
+def save_image(image, name):
+    file_path = get_path_file(name)
+    cv2.imwrite(file_path, image)
+    print("Save done")
+
 
 count = 0
 while True:
-    # ret, img = cam.read()
-    img = picam.get_image()
+    # img = picam.get_image()
+    img = kinect.get_image()
     faces = face_detect(img)
     for (x, y, w, h) in faces:
-        cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 1)
+        cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), BORDER_WIDTH)
+        cv2.imshow("image", img)
         count += 1
         # Save the captured image into the datasets folder
         print("face detected ..., waitting for save")
-        cv2.imwrite(
-            DATASET_PATH + "/face." + str("t5l") + "." + str(count) + ".jpg",
-            img[y + 1 : y + h - 1, x + 1 : x + w - 1],
+
+        save_image(
+            image=img[
+                y + BORDER_WIDTH : y + h - BORDER_WIDTH,
+                x + BORDER_WIDTH : x + w - BORDER_WIDTH,
+            ],
+            name="face." + str(current_milli_time()) + ".jpg",
         )
-        print("Save done")
-        cv2.imshow("image", img)
+
     cv2.imshow("image", img)
     k = cv2.waitKey(1) & 0xFF  # Press 'ESC' for exiting video
     if k == 27:
         break
 
-picam.detroy()
+# picam.detroy()
 cv2.destroyAllWindows()
