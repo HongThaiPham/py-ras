@@ -6,6 +6,7 @@ from face_detect import face_detect
 import os
 from datetime import datetime
 import time
+from gdrive import upload_dataset, writeImageToGDrive, getFolderfromGDrive
 
 
 current_milli_time = lambda: int(round(time.time() * 1000))
@@ -20,12 +21,13 @@ def get_path_file(name):
     directory = os.path.join(DATASET_PATH, folder_name)
     if not os.path.exists(directory):
         os.makedirs(directory)
-    return os.path.join(directory, name)
+    return {"name": name, "path": os.path.join(directory, name)}
 
 
-def save_image(image, name):
+def save_image(image, name, folder):
     file_path = get_path_file(name)
     cv2.imwrite(file_path, image)
+    writeImageToGDrive(name, file_path["path"], getFolderfromGDrive(file_path["name"]))
     print("Save done")
 
 
