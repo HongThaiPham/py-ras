@@ -34,7 +34,7 @@ def save_image(image, name):
 
 print("1. Collect data")
 print("2. Upload dataset to GDrive")
-you_choice = input("Select 1 or 2")
+you_choice = int(input("Select 1 or 2"))
 if you_choice == 1:
     while True:
         img = picam.get_image()
