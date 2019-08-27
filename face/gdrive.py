@@ -5,6 +5,8 @@ from httplib2 import Http
 from oauth2client import file, client, tools
 from googleapiclient.http import MediaFileUpload
 import os
+import cv2
+from face_detect import face_detect
 
 
 CURRDIR = os.path.join(os.getcwd(), "face")
@@ -171,7 +173,13 @@ def get_dataset(filestore=FILESTORE):
         for r, d, f in os.walk(os.path.join(filestore, folder)):
             for file in f:
                 if ".jpg" in file:
-                    image_items.append({"name": file, "path": os.path.join(r, file)})
+                    path = os.path.join(r, file)
+                    img = cv2.imread(path)
+                    faces = face_detect(img)
+                    if faces:
+                        image_items.append(
+                            {"name": file, "path": path}
+                        )
         result.append({"name": folder, "images": image_items})
     return result
 
