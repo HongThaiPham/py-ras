@@ -24,7 +24,7 @@ def get_path_file(name):
     return {"name": name, "path": os.path.join(directory, name)}
 
 
-def save_image(image, name, folder):
+def save_image(image, name):
     file_path = get_path_file(name)
     cv2.imwrite(file_path, image)
     writeImageToGDrive(name, file_path["path"], getFolderfromGDrive(file_path["name"]))
