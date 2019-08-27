@@ -33,10 +33,10 @@ def save_image(image, name):
 
 
 while True:
-    print('1. Collect data')
-    print('2. Upload dataset to GDrive')
+    print("1. Collect data")
+    print("2. Upload dataset to GDrive")
     k = cv2.waitKey(1) & 0xFF
-    if (k == 1):
+    if k == 1:
         img = picam.get_image()
         # img = kinect.get_image()
         faces = face_detect(img)
@@ -53,11 +53,11 @@ while True:
                 ],
                 name="face." + str(current_milli_time()) + ".jpg",
             )
-        cv2.imshow("image", img) 
+        cv2.imshow("image", img)
         upload_dataset()
-    elseif (k == 2):
+    elif k == 2:
         upload_dataset()
-    elseif (k == 27):
+    elif k == 27:
         break
     # k = cv2.waitKey(1) & 0xFF  # Press 'ESC' for exiting video
     # if k == 27:
