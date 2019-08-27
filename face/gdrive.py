@@ -176,7 +176,7 @@ def get_dataset(filestore=FILESTORE):
                     path = os.path.join(r, file)
                     img = cv2.imread(path)
                     faces = face_detect(img)
-                    if faces:
+                    if len(faces)>0:
                         image_items.append(
                             {"name": file, "path": path}
                         )
