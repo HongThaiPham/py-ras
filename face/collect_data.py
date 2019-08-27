@@ -27,35 +27,41 @@ def get_path_file(name):
 def save_image(image, name):
     file_path = get_path_file(name)
     cv2.imwrite(file_path["path"], image)
-    time.sleep(1)
+    # time.sleep(1)
     # writeImageToGDrive(name, file_path["path"], getFolderfromGDrive(file_path["name"]))
     print("Save done")
 
 
-count = 0
 while True:
-    img = picam.get_image()
-    # img = kinect.get_image()
-    faces = face_detect(img)
-    for (x, y, w, h) in faces:
-        cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), BORDER_WIDTH)
-        cv2.imshow("image", img)
-        count += 1
-        # Save the captured image into the datasets folder
-        print("face detected ..., waitting for save")
+    print('1. Collect data')
+    print('2. Upload dataset to GDrive')
+    k = cv2.waitKey(1) & 0xFF
+    if k==1:
+        img = picam.get_image()
+        # img = kinect.get_image()
+        faces = face_detect(img)
+        for (x, y, w, h) in faces:
+            cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), BORDER_WIDTH)
+            cv2.imshow("image", img)
+            # Save the captured image into the datasets folder
+            print("face detected ..., waitting for save")
 
-        save_image(
-            image=img[
-                y + BORDER_WIDTH : y + h - BORDER_WIDTH,
-                x + BORDER_WIDTH : x + w - BORDER_WIDTH,
-            ],
-            name="face." + str(current_milli_time()) + ".jpg",
-        )
-
-    cv2.imshow("image", img)
-    k = cv2.waitKey(1) & 0xFF  # Press 'ESC' for exiting video
-    if k == 27:
+            save_image(
+                image=img[
+                    y + BORDER_WIDTH : y + h - BORDER_WIDTH,
+                    x + BORDER_WIDTH : x + w - BORDER_WIDTH,
+                ],
+                name="face." + str(current_milli_time()) + ".jpg",
+            )
+        cv2.imshow("image", img) 
+        upload_dataset()
+    elseif k==2:
+        upload_dataset()
+    elseif k==27:
         break
+    # k = cv2.waitKey(1) & 0xFF  # Press 'ESC' for exiting video
+    # if k == 27:
+    #     break
 
 picam.detroy()
 cv2.destroyAllWindows()
