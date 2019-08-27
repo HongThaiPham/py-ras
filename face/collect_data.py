@@ -33,8 +33,8 @@ def save_image(image, name, folder):
 
 count = 0
 while True:
-    # img = picam.get_image()
-    img = kinect.get_image()
+    img = picam.get_image()
+    # img = kinect.get_image()
     faces = face_detect(img)
     for (x, y, w, h) in faces:
         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), BORDER_WIDTH)
@@ -56,5 +56,5 @@ while True:
     if k == 27:
         break
 
-# picam.detroy()
+picam.detroy()
 cv2.destroyAllWindows()
