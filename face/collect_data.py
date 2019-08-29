@@ -34,7 +34,7 @@ def save_image(image, name):
 
 print("1. Collect data")
 print("2. Upload dataset to GDrive")
-you_choice = int(input("Select 1 or 2"))
+you_choice = int(input("Select 1 or 2: "))
 if you_choice == 1:
     while True:
         img = picam.get_image()
@@ -42,7 +42,7 @@ if you_choice == 1:
         faces = face_detect(img)
         for (x, y, w, h) in faces:
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), BORDER_WIDTH)
-            cv2.imshow("image", img)
+            # cv2.imshow("image", img)
             # Save the captured image into the datasets folder
             print("face detected ..., waitting for save")
 
@@ -53,7 +53,7 @@ if you_choice == 1:
                 ],
                 name="face." + str(current_milli_time()) + ".jpg",
             )
-        cv2.imshow("image", img)
+        # cv2.imshow("image", img)
         k = cv2.waitKey(1) & 0xFF  # Press 'ESC' for exiting video
         if k == 27:
             picam.detroy()
