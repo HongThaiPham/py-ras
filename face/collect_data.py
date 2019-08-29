@@ -29,7 +29,7 @@ def save_image(image, name):
     cv2.imwrite(file_path["path"], image)
     # time.sleep(1)
     # writeImageToGDrive(name, file_path["path"], getFolderfromGDrive(file_path["name"]))
-    print("Save done")
+    print("Save done", file_path["path"])
 
 
 print("1. Collect data")
